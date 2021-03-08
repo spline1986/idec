@@ -346,3 +346,23 @@ class Uplink():
         }
         response = post(self.url + "f/p", data=data, files=files)
         return response.text
+
+    def push(self, auth: str, bundle: str, echoarea: str) -> str:
+        """
+        Push bundle to uplink (u/push).
+
+        Args:
+            auth (str): Pusher authstr.
+            bundle (str): Bundle. "msgid:base64" format.
+            echoarea (str): Echoarea name.
+
+        Return:
+            str: Uplink response string.
+        """
+        data = {
+            "nauth": auth,
+            "upush": bundle,
+            "echoarea": echoarea
+        }
+        response = post(self.url + "u/push", data=data)
+        return response.text
