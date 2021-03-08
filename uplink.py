@@ -7,8 +7,8 @@ License: GNU GPL 3 (see LICENSE for details).
 
 from base64 import b64encode
 from requests import get, post
+from requests.models import Response
 from typing import Dict, List, Set
-from urllib3 import HTTPResponse
 
 
 class Uplink():
@@ -216,7 +216,7 @@ class Uplink():
                 })
         return filelist
 
-    def save_file(self, destination: str, filename: str, response: HTTPResponse):
+    def save_file(self, destination: str, filename: str, response: Response):
         response.raw.decode_content = True
         path = destination
         if not path.endswith("/"):
