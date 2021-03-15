@@ -11,7 +11,7 @@ from requests.models import Response
 from typing import Dict, List, Set
 
 
-class Uplink():
+class Uplink:
     """
     This object contains URL and authstr of IDEC-node.
 
@@ -92,7 +92,7 @@ class Uplink():
         url = "{}u/e/{}".format(self.url, "/".join(echoareas))
         if depth > 0:
             url += "/-{0}:{0}".format(depth)
-            response = get(url)
+        response = get(url)
         msgids = []
         for line in response.text.split("\n"):
             if len(line) > 0 and "." not in line:
@@ -132,7 +132,7 @@ class Uplink():
         Downloads message bundle from uplink.
 
         Args:
-            list(str): List of msgids.
+            msgids(List): List of msgids.
 
         Return:
             list(dict): List of dicts (str, str) {"msgid", "encoded"},
@@ -168,7 +168,7 @@ class Uplink():
         """
         data = {
             "pauth": self.auth,
-            "tmsg": base64.b64encode(message.encode()),
+            "tmsg": b64encode(message.encode()),
         }
         response = post(self.url + "u/point", data=data)
         return response.text
@@ -199,7 +199,6 @@ class Uplink():
             list(dict): List of dicts (str, int, str)
                         {"name", "size", "description"}.
         """
-        response = None
         if self.auth:
             data = {"pauth": self.auth}
             response = post(self.url + "/x/filelist", data=data)
@@ -216,7 +215,8 @@ class Uplink():
                 })
         return filelist
 
-    def save_file(self, destination: str, filename: str, response: Response):
+    @staticmethod
+    def save_file(destination: str, filename: str, response: Response):
         response.raw.decode_content = True
         path = destination
         if not path.endswith("/"):
@@ -316,7 +316,7 @@ class Uplink():
 
         Args:
             fecho (str): Fileechoarea name.
-            fidname (str): Fid and filename in format "fid:filename".
+            fid_name (str): Fid and filename in format "fid:filename".
                            Can be a full line of fileechoarea index.
             destination (str): The path of the saved file.
         """
