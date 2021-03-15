@@ -77,7 +77,7 @@ class Uplink():
                 msgids.append(line)
         return msgids
 
-    def get_index(self, echoareas: str, depth: int = 0) -> List:
+    def get_index(self, echoareas: List, depth: int = 0) -> List:
         """
         Downloads echoareas index from uplink (u/e/ scheme).
 
