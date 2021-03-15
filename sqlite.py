@@ -35,11 +35,11 @@ class Sqlite(Base):
         connection.close()
 
     def get_counts(self, echoareas: List) -> Dict:
-        connection, cursor = self.__connect()
-        sql = "SELECT COUNT(1) FROM messages WHERE echoarea = ?;"
         counts = {}
+        sql = "SELECT COUNT(1) FROM messages WHERE echoarea = ?;"
+        connection, cursor = self.__connect()
         for echoarea in echoareas:
-            count = int(cursor.execute(sql, echoarea,).fetchone()[0])
+            count = int(cursor.execute(sql, (echoarea,)).fetchone()[0])
             counts[echoarea] = count
         connection.close()
         return counts
@@ -49,14 +49,14 @@ class Sqlite(Base):
         sql = "SELECT msgid FROM messages WHERE echoarea = ?;"
         connection, cursor = self.__connect()
         for echoarea in echoareas:
-            index = index + list(cursor.execute(sql, echoarea,).fetchall())
+            index = index + list(cursor.execute(sql, (echoarea,)).fetchall())
         connection.close()
         return index
 
     def is_message_exists(self, echoarea: str, msgid: str) -> bool:
         connection, cursor = self.__connect()
         sql = "SELECT COUNT(1) FROM messages WHERE msgid = ?;"
-        count = cursor.execute(sql, msgid,).fetchone()[0]
+        count = cursor.execute(sql, (msgid,)).fetchone()[0]
         connection.close()
         if count == 0:
             return False
@@ -66,7 +66,7 @@ class Sqlite(Base):
     def get_message(self, msgid: str) -> str:
         connection, cursor = self.__connect()
         sql = "SELECT * FROM messages WHERE msgid = ?;"
-        message = cursor.execute(sql, msgid,).fetchone()[0]
+        message = cursor.execute(sql, (msgid,)).fetchone()[0]
         connection.close()
         return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message[2:])
 
