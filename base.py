@@ -1,3 +1,7 @@
+"""
+Message base abstract class.
+"""
+
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from hashlib import sha256
 from time import time
@@ -147,6 +151,17 @@ class Base:
 
     @staticmethod
     def build_message(point: Dict, encoded: str) -> (str, str):
+        """
+        Build message by point information and pont's message.
+
+        Args:
+            point (dics): Point information {"name", "address"}.
+            encoded (str): Base64 encoded point's message.
+
+        Return:
+            str: Echoarea name.
+            str: Ready message.
+        """
         parsed_message = Base.parse_point_message(encoded)
         date = str(int(time()))
         msg = "{}\n".format(parsed_message["tags"])
@@ -162,6 +177,17 @@ class Base:
 
     @staticmethod
     def toss_message(self, save_message: Callable, point: Dict, encoded: str) -> str:
+        """
+        Build message, make msgid and save it.
+
+        Args:
+            save_message (Callable): Save message function.
+            point (Dict): Point information {"name", "address"}.
+            encoded (str): Base64 encoded point's message.
+
+        Return:
+            str: Response text.
+        """
         echoarea, message = Base.build_message(point, encoded)
         if getsizeof(message) <= 65535:
             h = Base.build_hash(message)
