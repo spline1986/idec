@@ -183,7 +183,7 @@ class Uplink():
         Return:
             dict: Dict of echoareas counts (str) {"name"}.
         """
-        response = get("{}/x/c/{}".format(self.url, echoareas))
+        response = get("{}/x/c/{}".format(self.url, "/".join(echoareas)))
         counts = {}
         for line in response.text.split("\n"):
             if len(line) > 0:
