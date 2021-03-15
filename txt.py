@@ -64,4 +64,4 @@ class Txt(Base):
             self.save_message(echoarea, message["msgid"], body)
 
     def toss_message(self, point: Dict, encoded: str) -> str:
-        super().toss_message(self.save_message, point, encoded)
+        return super().toss_message(self.save_message, point, encoded)
