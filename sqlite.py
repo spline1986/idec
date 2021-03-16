@@ -114,7 +114,7 @@ class Sqlite(Base):
         """
         connection, cursor = self.__connect()
         sql = "SELECT * FROM messages WHERE msgid = ?;"
-        message = cursor.execute(sql, (msgid,)).fetchone()[0]
+        message = cursor.execute(sql, (msgid,)).fetchone()
         connection.close()
         return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message[2:])
 
