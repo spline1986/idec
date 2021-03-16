@@ -218,6 +218,14 @@ class Uplink:
 
     @staticmethod
     def save_file(destination: str, filename: str, response: Response):
+        """
+        Save file from http-response.
+
+        Args:
+            destination (str): Path to saved file.
+            filename (str): Filename of saved file.
+            response (Response): HTTP-response with downloaded file.
+        """
         response.raw.decode_content = True
         path = destination
         if not path.endswith("/"):

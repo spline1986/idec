@@ -24,7 +24,7 @@ class Base:
         Counts the number of messages in a echoarea.
 
         Args:
-            echoarea (List): Echoareas names.
+            echoareas (List): Echoareas names.
 
         Return:
             Dict: Dict of echoareas counts (str) {"name": int}.
@@ -54,7 +54,7 @@ class Base:
         Return:
              bool: True if message exists.
         """
-        ...
+        pass
 
     def get_message(self, msgid: str) -> str:
         """
@@ -182,7 +182,7 @@ class Base:
         return parsed_message["echoarea"], msg
 
     @staticmethod
-    def toss_message(self, save_message: Callable, point: Dict, encoded: str) -> str:
+    def toss_message(save_message: Callable, point: Dict, encoded: str) -> str:
         """
         Build message, make msgid and save it.
 
