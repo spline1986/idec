@@ -35,9 +35,13 @@ class Client:
                     maximum = current
         return maximum
 
-    def download_mail(self):
+    def download_mail(self) -> int:
         depth = self.index_offset
         if depth > 0:
             index = self.uplink.get_index(self.echoareas, depth)
             bundle = self.uplink.get_bundle(index)
-            self.base.save_messages(bundle)
+            return self.base.save_messages(bundle)
+        return 0
+
+    def send_message(self, message: str):
+        self.uplink.send_message(message)
