@@ -141,6 +141,7 @@ class Uplink:
         blocks = self.split(msgids)
         bundle = []
         for block in blocks:
+            print("fetch", "{}/u/m/{}".format(self.url, "/".join(block)))
             response = get("{}/u/m/{}".format(self.url, "/".join(block)))
             for line in response.text.split("\n"):
                 if len(line) > 0:
