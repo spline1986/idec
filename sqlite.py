@@ -82,7 +82,7 @@ class Sqlite(Base):
         connection.close()
         return index
 
-    def is_message_exists(self, echoarea: str, msgid: str) -> bool:
+    def is_message_exists(self, msgid: str) -> bool:
         """
         Check message exists in echoarea.
 
@@ -95,7 +95,7 @@ class Sqlite(Base):
         """
         connection, cursor = self.__connect()
         sql = "SELECT COUNT(1) FROM messages WHERE msgid = ?;"
-        count = cursor.execute(sql, (msgid,)).fetchone()[0]
+        count = cursor.execute(sql, (msgid,)).fetchone()
         connection.close()
         if count == 0:
             return False

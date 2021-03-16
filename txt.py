@@ -64,7 +64,7 @@ class Txt(Base):
                             index.append(msgid)
         return index
 
-    def is_message_exists(self, echoarea: str, msgid: str) -> bool:
+    def is_message_exists(self, msgid: str) -> bool:
         """
         Check message exists in echoarea.
 
@@ -75,10 +75,7 @@ class Txt(Base):
         Return:
              bool: True if message exists.
         """
-        if not path.exists(self.path + "echo/" + echoarea):
-            return False
-        index = open(self.path + "echo/" + echoarea).read().split("\n")
-        if msgid in index:
+        if path.exists("msg/" + msgid):
             return True
         return False
 

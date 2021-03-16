@@ -43,7 +43,7 @@ class Base:
         """
         pass
 
-    def is_message_exists(self, echoarea: str, msgid: str) -> bool:
+    def is_message_exists(self, msgid: str) -> bool:
         """
         Check message exists in echoarea.
 
