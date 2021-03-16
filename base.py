@@ -4,9 +4,10 @@ Message base abstract class.
 
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from hashlib import sha256
+from random import randint
+from sys import getsizeof
 from time import time
 from typing import Callable, Dict, List
-from sys import getsizeof
 
 
 class Base:
@@ -48,7 +49,6 @@ class Base:
         Check message exists in echoarea.
 
         Args:
-            echoarea (str): Echoarea name.
             msgid (str): Msgid of message.
 
         Return:
@@ -82,7 +82,7 @@ class Base:
             bool: Save status. True if message saved else False.
         """
         pass
-        
+
     def save_messages(self, bundle: List) -> int:
         """
         Save messages of bundle to base.
@@ -110,6 +110,48 @@ class Base:
                  "msg ok:<msgid>" or "error: msg big!".
         """
         pass
+
+    def add_point(self, username: str) -> str:
+        """
+        Register point.
+
+        Args:
+            username (str): Point username.
+
+        Return:
+            str: Authstr.
+        """
+        pass
+
+    def check_point(self, authstr: str) -> Dict:
+        """
+        Check for a point.
+
+        Args:
+            authstr (str): Search authstr.
+
+        Return:
+            Dict: Point informationa:
+                  {"username", "address"} or None.
+        """
+        pass
+
+    @staticmethod
+    def generate_authstr(username: str) -> str:
+        """
+        Generate authstr by username.
+
+        Args:
+            username (str): Point username.
+
+        Return:
+            str: Authstr.
+        """
+        salt = str(randint(1, 999999999))
+        salted = (username + salt).encode("utf-8")
+        hsh = urlsafe_b64encode(sha256(salted).digest())
+        hsh = hsh.decode("utf-8")
+        return hsh.replace("-", "A").replace("_", "z")[:8].ljust(8, "A")
 
     @staticmethod
     def build_hash(message: str) -> str:
@@ -201,3 +243,4 @@ class Base:
             return "msg ok:" + h
         else:
             return "error: msg big!"
+

@@ -41,6 +41,12 @@ class Sqlite(Base):
         body TEXT,
         UNIQUE(id));"""
         cursor.execute(sql)
+        sql = """CREATE TABLE IF NOT EXISTS points(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        username TEXT,
+        authstr TEXT,
+        UNIQUE(id));"""
+        cursor.execute(sql)
         connection.commit()
         connection.close()
 
@@ -87,7 +93,6 @@ class Sqlite(Base):
         Check message exists in echoarea.
 
         Args:
-            echoarea (str): Echoarea name.
             msgid (str): Msgid of message.
 
         Return:
@@ -126,7 +131,7 @@ class Sqlite(Base):
             echoarea (str): Echoarea name.
             msgid (str): Msgid.
             message (str): Message as plain text.
-            other (object): Additional argument.
+            cursor (object): Additional argument.
 
         Return:
             bool: Save status. True if message saved else False.
@@ -149,13 +154,14 @@ class Sqlite(Base):
         """
         connection, cursor = self.__connect()
         new_messages = []
+        echoarea = ""
         for message in bundle:
             body = urlsafe_b64decode(message["encoded"]).decode("utf-8")
             echoarea = body.split("\n")[1]
-            if not self.is_message_exists(echoarea, message["msgid"]):
+            if not self.is_message_exists(message["msgid"]):
                 new_messages.append({"msgid": message["msgid"], "body": body})
         for message in new_messages:
-            self.save_message(echoarea, message["msgid"],message["body"], cursor)
+            self.save_message(echoarea, message["msgid"], message["body"], cursor)
         connection.commit()
         connection.close()
         return len(new_messages)
@@ -174,3 +180,46 @@ class Sqlite(Base):
                  "msg ok:<msgid>" or "error: msg big!".
         """
         return super().toss_message(self.save_message, point, encoded)
+
+    def add_point(self, username: str) -> str:
+        """
+        Register point.
+
+        Args:
+            username (str): Point username.
+
+        Return:
+            str: Authstr.
+        """
+        connection, cursor = self.__connect()
+        sql = "SELECT COUNT(1) FROM points WHERE username = ?"
+        if cursor.execute(sql, (username,)).fetchone()[0] == 0:
+            point_exists = False
+        else:
+            point_exists = True
+        if not point_exists:
+            authstr = Base.generate_authstr(username)
+            sql = "INSERT INTO points (username, authstr) VALUES (?, ?);"
+            cursor.execute(sql, (username, authstr))
+            connection.commit()
+            connection.close()
+            return authstr
+        return ""
+
+    def check_point(self, authstr: str) -> Dict:
+        """
+        Check for a point.
+
+        Args:
+            authstr (str): Search authstr.
+
+        Return:
+            Dict: Point informationa:
+                  {"username", "address"} or None.
+        """
+        connection, cursor = self.__connect()
+        sql = "SELECT username, id FROM points WHERE authstr = ?;"
+        point = cursor.execute(sql, (authstr, )).fetchone()
+        if point:
+            return {"username": point[0], "address": point[1]}
+        return None

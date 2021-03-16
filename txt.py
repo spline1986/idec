@@ -27,6 +27,8 @@ class Txt(Base):
             mkdir(self.path + "echo")
         if not path.exists(self.path + "blacklist.txt"):
             open(self.path + "blacklist.txt", "w")
+        if not path.exists(self.path + "points.txt"):
+            open(self.path + "points.txt")
 
     def get_counts(self, echoareas: List) -> Dict:
         """
@@ -69,7 +71,6 @@ class Txt(Base):
         Check message exists in echoarea.
 
         Args:
-            echoarea (str): Echoarea name.
             msgid (str): Msgid of message.
 
         Return:
@@ -107,7 +108,7 @@ class Txt(Base):
         Return:
             bool: Save status. True if message saved else False.
         """
-        if not self.is_message_exists(echoarea, msgid):
+        if not self.is_message_exists(msgid):
             open(self.path + "echo/" + echoarea, "a").write(msgid + "\n")
             open(self.path + "msg/" + msgid, "w").write(message)
             return True
@@ -146,3 +147,44 @@ class Txt(Base):
                  "msg ok:<msgid>" or "error: msg big!".
         """
         return super().toss_message(self.save_message, point, encoded)
+
+    def add_point(self, username: str) -> str:
+        """
+        Register point.
+
+        Args:
+            username (str): Point username.
+
+        Return:
+            str: Authstr.
+        """
+        points = open("points.txt").read().split("\n")
+        exists = False
+        for point in points:
+            if username == point.split(":")[0]:
+                exists = True
+        if not exists:
+            authstr = Base.generate_authstr(username)
+            open("points.txt", "a").write("{}:{}\n".format(username, authstr))
+            return authstr
+        return ""
+
+    def check_point(self, authstr: str) -> Dict:
+        """
+        Check for a point.
+
+        Args:
+            authstr (str): Search authstr.
+
+        Return:
+            Dict: Point informationa:
+                  {"username", "address"} or None.
+        """
+        points = open("points.txt").read().split("\n")
+        i = 0
+        for point in points:
+            i += 1
+            fields = point.split(":")
+            if authstr == fields[1]:
+                return {"username": point[0], "addr": i}
+        return None
