@@ -215,11 +215,11 @@ class Sqlite(Base):
 
         Return:
             Dict: Point informationa:
-                  {"username", "address"} or None.
+                  {"name", "address"} or None.
         """
         connection, cursor = self.__connect()
         sql = "SELECT username, id FROM points WHERE authstr = ?;"
         point = cursor.execute(sql, (authstr, )).fetchone()
         if point:
-            return {"username": point[0], "address": point[1]}
+            return {"name": point[0], "address": point[1]}
         return None

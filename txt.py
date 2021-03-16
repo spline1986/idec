@@ -178,7 +178,7 @@ class Txt(Base):
 
         Return:
             Dict: Point informationa:
-                  {"username", "address"} or None.
+                  {"name", "address"} or None.
         """
         points = open("points.txt").read().split("\n")
         i = 0
@@ -186,5 +186,5 @@ class Txt(Base):
             i += 1
             fields = point.split(":")
             if authstr == fields[1]:
-                return {"username": point[0], "addr": i}
+                return {"name": point[0], "addr": i}
         return None

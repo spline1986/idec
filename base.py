@@ -132,7 +132,7 @@ class Base:
 
         Return:
             Dict: Point informationa:
-                  {"username", "address"} or None.
+                  {"name", "address"} or None.
         """
         pass
 
