@@ -77,7 +77,8 @@ class Sqlite(Base):
         sql = "SELECT msgid FROM messages WHERE echoarea = ?;"
         connection, cursor = self.__connect()
         for echoarea in echoareas:
-            index = index + list(cursor.execute(sql, (echoarea,)).fetchall())
+            for msgid in cursor.execute(sql, (echoarea,)).fetchall():
+                index.append(msgid[0])
         connection.close()
         return index
 
