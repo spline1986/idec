@@ -53,15 +53,21 @@ class Txt(Base):
         except FileNotFoundError:
             raise
 
-    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None):
-        open(self.path + "echo/" + echoarea, "a").write(msgid + "\n")
-        open(self.path + "msg/" + msgid, "w").write(message)
+    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None) -> bool:
+        if not self.is_message_exists(echoarea, msgid):
+            open(self.path + "echo/" + echoarea, "a").write(msgid + "\n")
+            open(self.path + "msg/" + msgid, "w").write(message)
+            return True
+        return False
 
-    def save_messages(self, bundle: List):
+    def save_messages(self, bundle: List) -> int:
+        saved_counter = 0
         for message in bundle:
             body = urlsafe_b64decode(message["encoded"]).decode("utf-8")
             echoarea = body.split("\n")[1]
-            self.save_message(echoarea, message["msgid"], body)
+            if self.save_message(echoarea, message["msgid"], body):
+                saved_counter += 1
+        return saved_counter
 
     def toss_message(self, point: Dict, encoded: str) -> str:
         return super().toss_message(self.save_message, point, encoded)

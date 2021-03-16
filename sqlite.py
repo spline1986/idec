@@ -76,14 +76,19 @@ class Sqlite(Base):
         lines = message.split("\n")
         cursor.execute(sql, (msgid, *lines[:7], "\n".join(lines[8:])))
 
-    def save_messages(self, bundle: List):
+    def save_messages(self, bundle: List) -> int:
         connection, cursor = self.__connect()
+        new_messages = []
         for message in bundle:
             body = urlsafe_b64decode(message["encoded"]).decode("utf-8")
             echoarea = body.split("\n")[1]
-            self.save_message(echoarea, message["msgid"], body, cursor)
+            if not self.is_message_exists(echoarea, message["msgid"]):
+                new_messages.append({"msgid": message["msgid"], "body": body})
+        for message in new_messages:
+            self.save_message(echoarea, message["msgid"],message["body"], cursor)
         connection.commit()
         connection.close()
+        return len(new_messages)
 
     def toss_message(self, point: Dict, encoded: str) -> str:
         return super().toss_message(self.save_message, point, encoded)

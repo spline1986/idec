@@ -68,7 +68,7 @@ class Base:
         """
         pass
 
-    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None):
+    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None) -> bool:
         """
         Save message to base.
 
@@ -77,16 +77,22 @@ class Base:
             msgid (str): Msgid.
             message (str): Message as plain text.
             other (object): Additional argument.
+
+        Return:
+            bool: Save status. True if message saved else False.
         """
         pass
         
-    def save_messages(self, bundle: List):
+    def save_messages(self, bundle: List) -> int:
         """
         Save messages of bundle to base.
 
         Args:
             bundle (List): Bundle as List of dict:
                            {"msgid", "encoded"}.
+
+        Return:
+            int: Saved messages count.
         """
         pass
 
