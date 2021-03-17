@@ -10,6 +10,30 @@ def index():
     return "Welcome to IDEC!"
 
 
+@route("/list.txt")
+def echoareas_list():
+    response.set_header("Content-Type", "text/plain; charset=utf-8")
+    config = json.loads(open("server.json").read())
+    echoareas = []
+    for echoarea in config["echoareas"]:
+        echoareas.append(echoarea["name"])
+    counts = base.get_counts(echoareas)
+    list_txt = []
+    for echoarea in config["echoareas"]:
+        list_txt.append("{}:{}:{}".format(
+            echoarea["name"],
+            counts[echoarea["name"]] if echoarea["name"] in counts else 0,
+            echoarea["description"]
+        ))
+    return "\n".join(list_txt) + "\n\n"
+
+
+@route("/blacklist.txt")
+def blacklist():
+    response.set_header("Content-Type", "text/plain; charset=utf-8")
+    return "\n".join(base.get_blacklist()) + "\n\n"
+
+
 @route("/e/<echoarea>")
 def echoarea_index(echoarea):
     response.set_header("Content-Type", "text/plain; charset=utf-8")
