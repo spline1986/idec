@@ -1,9 +1,9 @@
 import json
 import sys
-from client import Client
-from sqlite import Sqlite
+from idec.client import Client
+from base.sqlite import Sqlite
 from typing import Dict
-from uplink import Uplink
+from idec.uplink import Uplink
 
 
 def load_config(filename: str = "fetcher.json") -> Dict:

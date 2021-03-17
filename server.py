@@ -1,6 +1,6 @@
 from base64 import urlsafe_b64encode
 from bottle import post, request, response, route, run
-from sqlite import Sqlite
+from base.sqlite import Sqlite
 import json
 
 
