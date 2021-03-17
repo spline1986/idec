@@ -2,7 +2,7 @@
 Message sqlite3-base.
 """
 
-from base import Base
+from base.base import Base
 from base64 import urlsafe_b64decode
 from typing import Dict, List
 import sqlite3
@@ -134,10 +134,11 @@ class Sqlite(Base):
             str: Message as plain text.
         """
         connection, cursor = self.__connect()
-        sql = "SELECT * FROM messages WHERE msgid = ?;"
+        sql = "SELECT tags, echoarea, date, msgfrom, address, msgto, " + \
+              "subject, body FROM messages WHERE msgid = ?;"
         message = cursor.execute(sql, (msgid,)).fetchone()
         connection.close()
-        return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message[2:])
+        return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message)
 
     def save_message(self, echoarea: str, msgid: str, message: str, cursor: object = None):
         """

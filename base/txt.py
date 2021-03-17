@@ -2,7 +2,7 @@
 Messages base based on plain text files.
 """
 
-from base import Base
+from base.base import Base
 from base64 import urlsafe_b64decode
 from os import path, mkdir
 from typing import Dict, List
