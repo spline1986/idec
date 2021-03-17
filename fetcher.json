@@ -1,0 +1,8 @@
+{
+  "uplink": "http://idec.spline-online.tk",
+  "base": "idec.db",
+  "echoareas": [
+    "pipe.2032",
+    "bash.rss"
+  ]
+}
