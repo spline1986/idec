@@ -2,9 +2,9 @@
 IDEC-client class.
 """
 
-from base import Base
+from base.base import Base
 from typing import List
-from uplink import Uplink
+from idec.uplink import Uplink
 
 
 class Client:
