@@ -31,6 +31,7 @@ class Sqlite(Base):
         sql = """CREATE TABLE IF NOT EXISTS messages(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         msgid TEXT,
+        blacklisted INTEGER DEFAULT 0,
         tags TEXT,
         echoarea TEXT,
         date INTEGER,
@@ -49,6 +50,21 @@ class Sqlite(Base):
         cursor.execute(sql)
         connection.commit()
         connection.close()
+
+    def get_blacklist(self) -> List:
+        """
+        Return blacklisted msgids.
+
+        Return:
+            List: List of blacklisted msgids.
+        """
+        connection, cursor = self.__connect()
+        sql = "SELECT msgid FROM messages WHERE blacklisted = 1;"
+        response = cursor.execute(sql).fetchall()
+        blacklist = []
+        for item in response:
+            blacklist.append(item[0])
+        return blacklist
 
     def get_counts(self, echoareas: List) -> Dict:
         """
@@ -100,7 +116,7 @@ class Sqlite(Base):
         """
         connection, cursor = self.__connect()
         sql = "SELECT COUNT(1) FROM messages WHERE msgid = ?;"
-        count = cursor.execute(sql, (msgid,)).fetchone()
+        count = cursor.execute(sql, (msgid,)).fetchone()[0]
         connection.close()
         if count == 0:
             return False

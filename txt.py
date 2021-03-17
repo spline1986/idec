@@ -28,7 +28,17 @@ class Txt(Base):
         if not path.exists(self.path + "blacklist.txt"):
             open(self.path + "blacklist.txt", "w")
         if not path.exists(self.path + "points.txt"):
-            open(self.path + "points.txt")
+            open(self.path + "points.txt", "w")
+
+    def get_blacklist(self) -> List:
+        """
+        Return blacklisted msgids.
+
+        Return:
+            List: List of blacklisted msgids.
+        """
+        return list(filter(lambda x: len(x) > 0,
+                           open("blacklist.txt").read().split("\n")))
 
     def get_counts(self, echoareas: List) -> Dict:
         """
@@ -44,7 +54,8 @@ class Txt(Base):
         for echoarea in echoareas:
             if not path.exists(self.path + "echo/" + echoarea):
                 counts[echoarea] = 0
-            counts[echoarea] = len(open(self.path + "echo/" + echoarea).read().split()) - 1
+            else:
+                counts[echoarea] = len(open(self.path + "echo/" + echoarea).read().split()) - 1
         return counts
 
     def get_index(self, echoareas: List) -> List:

@@ -20,6 +20,15 @@ class Base:
         """
         pass
 
+    def get_blacklist(self) -> List:
+        """
+        Return blacklisted msgids.
+
+        Return:
+            List: List of blacklisted msgids.
+        """
+        pass
+
     def get_counts(self, echoareas: List) -> Dict:
         """
         Counts the number of messages in a echoarea.
