@@ -95,7 +95,7 @@ def receive_message(pauth: str, tmsg: str):
     if request.method == "POST":
         pauth = request.POST["pauth"]
         tmsg = request.POST["tmsg"]
-    point = base.check_point(pauth)
+    point = base.check_point(config["nodename"], pauth)
     status = base.toss_message(point, tmsg)
     return status
 

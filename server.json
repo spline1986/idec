@@ -1,4 +1,5 @@
 {
+  "nodename": "tester",
   "base": "idec.db",
   "echoareas": [
     { "name": "pipe.2032", "description": "Общесетевая болталка" },
