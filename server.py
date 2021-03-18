@@ -13,6 +13,7 @@ def index():
 @route("/list.txt")
 def echoareas_list():
     response.set_header("Content-Type", "text/plain; charset=utf-8")
+    response.set_header("Access-Control-Allow-Origin", "*")
     config = json.loads(open("server.json").read())
     echoareas = []
     for echoarea in config["echoareas"]:
@@ -37,12 +38,14 @@ def blacklist():
 @route("/e/<echoarea>")
 def echoarea_index(echoarea):
     response.set_header("Content-Type", "text/plain; charset=utf-8")
+    response.set_header("Access-Control-Allow-Origin", "*")
     return "\n".join(base.get_index([echoarea])) + "\n\n"
 
 
 @route("/m/<msgid>")
 def message(msgid):
     response.set_header("Content-Type", "text/plain; charset=utf-8")
+    response.set_header("Access-Control-Allow-Origin", "*")
     return base.get_message(msgid)
 
 
@@ -88,6 +91,7 @@ def universal_bundle(msgids):
 @route("/u/point/<pauth>/<tmsg>")
 def receive_message(pauth: str, tmsg: str):
     response.set_header("Content-Type", "text/plain; charset=utf-8")
+    response.set_header("Access-Control-Allow-Origin", "*")
     if request.method == "POST":
         pauth = request.POST["pauth"]
         tmsg = request.POST["tmsg"]
