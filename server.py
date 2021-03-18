@@ -89,7 +89,7 @@ def universal_bundle(msgids):
 
 @post("/u/point")
 @route("/u/point/<pauth>/<tmsg>")
-def receive_message(pauth: str, tmsg: str):
+def receive_message(pauth: str = "", tmsg: str = ""):
     response.set_header("Content-Type", "text/plain; charset=utf-8")
     response.set_header("Access-Control-Allow-Origin", "*")
     if request.method == "POST":

@@ -20,7 +20,7 @@ class Base:
         """
         pass
 
-    def get_blacklist(self) -> List:
+    def get_blacklist(self) -> List[str]:
         """
         Return blacklisted msgids.
 
@@ -29,7 +29,7 @@ class Base:
         """
         pass
 
-    def get_counts(self, echoareas: List) -> Dict:
+    def get_counts(self, echoareas: List[str]) -> Dict[str, int]:
         """
         Counts the number of messages in a echoarea.
 
@@ -41,7 +41,7 @@ class Base:
         """
         pass
 
-    def get_index(self, echoareas: List) -> List:
+    def get_index(self, echoareas: List[str]) -> List[str]:
         """
         Get msgids of echoareas and return they.
 
@@ -77,7 +77,8 @@ class Base:
         """
         pass
 
-    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None) -> bool:
+    def save_message(self, echoarea: str, msgid: str, message: str,
+                     other: object = None) -> bool:
         """
         Save message to base.
 
@@ -92,7 +93,7 @@ class Base:
         """
         pass
 
-    def save_messages(self, bundle: List) -> int:
+    def save_messages(self, bundle: List[Dict[str, str]]) -> int:
         """
         Save messages of bundle to base.
 
@@ -105,7 +106,7 @@ class Base:
         """
         pass
 
-    def toss_message(self, point: Dict, encoded: str) -> str:
+    def toss_message(self, point: Dict[str, str], encoded: str) -> str:
         """
         Toss message from point and save that to base.
 
@@ -143,7 +144,7 @@ class Base:
         """
         pass
 
-    def check_point(self, nodename: str, authstr: str) -> Dict:
+    def check_point(self, nodename: str, authstr: str) -> Dict[str, str]:
         """
         Check for a point.
 
@@ -157,7 +158,7 @@ class Base:
         """
         pass
 
-    def point_list(self) -> List:
+    def point_list(self) -> List[str]:
         """
         List of all points on server.
 
@@ -197,7 +198,7 @@ class Base:
         return hsh.decode("utf-8")[:20].replace("-", "A").replace("_", "z")
 
     @staticmethod
-    def parse_point_message(encoded: str) -> Dict:
+    def parse_point_message(encoded: str) -> Dict[str, str]:
         """
         Decode and parse point's message.
 
@@ -227,7 +228,7 @@ class Base:
         }
 
     @staticmethod
-    def build_message(point: Dict, encoded: str) -> (str, str):
+    def build_message(point: Dict[str, str], encoded: str) -> tuple[str, str]:
         """
         Build message by point information and pont's message.
 
@@ -253,7 +254,8 @@ class Base:
         return parsed_message["echoarea"], msg
 
     @staticmethod
-    def toss_message(save_message: Callable, point: Dict, encoded: str) -> str:
+    def toss_message(save_message: Callable, point: Dict[str, str],
+                     encoded: str) -> str:
         """
         Build message, make msgid and save it.
 
@@ -272,4 +274,3 @@ class Base:
             return "msg ok:" + h
         else:
             return "error: msg big!"
-

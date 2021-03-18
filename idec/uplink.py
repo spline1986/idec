@@ -8,7 +8,7 @@ License: GNU GPL 3 (see LICENSE for details).
 from base64 import b64encode
 from requests import get, post
 from requests.models import Response
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Union
 
 
 class Uplink:
@@ -26,7 +26,7 @@ class Uplink:
             self.url = url + "/"
         self.auth = auth
             
-    def get_list_txt(self) -> List:
+    def get_list_txt(self) -> List[Dict[str, str]]:
         """
         Downloads a list of echoareas from the uplink.
 
@@ -60,7 +60,7 @@ class Uplink:
                 msgids.add(line)
         return msgids
 
-    def get_echoarea(self, echoarea: str) -> List:
+    def get_echoarea(self, echoarea: str) -> List[str]:
         """
         Downloads echoarea index from uplink (e/ scheme).
 
@@ -77,7 +77,7 @@ class Uplink:
                 msgids.append(line)
         return msgids
 
-    def get_index(self, echoareas: List, depth: int = 0) -> List:
+    def get_index(self, echoareas: List[str], depth: int = 0) -> List[str]:
         """
         Downloads echoareas index from uplink (u/e/ scheme).
 
@@ -127,7 +127,7 @@ class Uplink:
         for i in range(0, len(items), size):
             yield items[i:i + size]
 
-    def get_bundle(self, msgids: List) -> List:
+    def get_bundle(self, msgids: List[str]) -> List[Dict[str, str]]:
         """
         Downloads message bundle from uplink.
 
@@ -135,7 +135,7 @@ class Uplink:
             msgids(List): List of msgids.
 
         Return:
-            list(dict): List of dicts (str, str) {"msgid", "encoded"},
+            list(dict): List of dicts {"msgid", "encoded"},
                         where "encoded" contains encoded message.
         """
         blocks = self.split(msgids)
@@ -174,7 +174,7 @@ class Uplink:
         response = post(self.url + "u/point", data=data)
         return response.text
 
-    def get_counts(self, echoareas: List) -> Dict:
+    def get_counts(self, echoareas: List[str]) -> Dict[str, int]:
         """
         Downloads echoareas counts from upllink.
 
@@ -182,7 +182,7 @@ class Uplink:
             echoareas(list): Echoareas names list.
 
         Return:
-            dict: Dict of echoareas counts (str) {"name"}.
+            dict: Dict of echoareas counts {"name"}.
         """
         response = get("{}/x/c/{}".format(self.url, "/".join(echoareas)))
         counts = {}
@@ -249,13 +249,12 @@ class Uplink:
         response = post(self.url + "x/file", data=data, stream=True)
         self.save_file(destination, filename, response)
 
-    def get_f_list_txt(self) -> List:
+    def get_f_list_txt(self) -> List[Dict[str, Union[str, int]]]:
         """
         Downloads a list of fileechoareas from the uplink.
 
         Return:
-            list(dict): List of dicts(str, int, str)
-                        {"name", "count", "description"}.
+            list(dict): List of dicts {"name", "count", "description"}.
         """
         response = get(self.url + "f/list.txt")
         fechoareas = []
@@ -269,7 +268,7 @@ class Uplink:
                 })
         return fechoareas
 
-    def get_f_blacklist_txt(self) -> Set:
+    def get_f_blacklist_txt(self) -> Set[str]:
         """
         Downloads a blacklist of messages from the uplink.
 
@@ -283,7 +282,7 @@ class Uplink:
                 fids.add(line)
         return fids
 
-    def get_fileechoareas_count(self, echoareas: List) -> Dict:
+    def get_fileechoareas_count(self, echoareas: List[str]) -> Dict[str, int]:
         """
         Downloads fileechoareas counts from upllink.
 
@@ -291,7 +290,7 @@ class Uplink:
             echoareas(list): Echoareas names list.
 
         Return:
-            dict: Dict of echoareas counts (str) {"name"}.
+            dict: Dict of echoareas counts {"name"}.
         """
         response = get("{}f/c/{}".format(self.url, "/".join(echoareas)))
         counts = {}
@@ -301,7 +300,7 @@ class Uplink:
                 counts[fechoarea[0]] = int(fechoarea[1])
         return counts
 
-    def get_fileechoareas_filelist(self, fileechoes: List) -> List:
+    def get_fileechoareas_filelist(self, fileechoes: List[str]) -> List[str]:
         """
         Downloads fileechoareas filelist.
 
@@ -319,7 +318,8 @@ class Uplink:
                 files.append(line)
         return files
 
-    def download_fileechoarea_file(self, fecho: str, fid_name: str, destination: str):
+    def download_fileechoarea_file(self, fecho: str, fid_name: str,
+                                   destination: str):
         """
         Downloads a file from fileechoarea and save it at destination.
 
@@ -330,10 +330,12 @@ class Uplink:
             destination (str): The path of the saved file.
         """
         frow = fid_name.split(":")
-        response = get("{}f/f/{}/{}".format(self.url, fecho, frow[0]), stream=True)
+        response = get("{}f/f/{}/{}".format(self.url, fecho, frow[0]),
+                       stream=True)
         self.save_file(destination, frow[1], response)
 
-    def send_file_to_fileechoarea(self, fecho: str, filename: str, description: str) -> str:
+    def send_file_to_fileechoarea(self, fecho: str, filename: str,
+                                  description: str) -> str:
         """
         Sends file to fileechoarea.
 

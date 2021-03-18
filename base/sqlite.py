@@ -9,7 +9,6 @@ import sqlite3
 
 
 class Sqlite(Base):
-
     def __init__(self, path: str):
         super().__init__(path)
         self.path = path
@@ -51,7 +50,7 @@ class Sqlite(Base):
         connection.commit()
         connection.close()
 
-    def get_blacklist(self) -> List:
+    def get_blacklist(self) -> List[str]:
         """
         Return blacklisted msgids.
 
@@ -66,7 +65,7 @@ class Sqlite(Base):
             blacklist.append(item[0])
         return blacklist
 
-    def get_counts(self, echoareas: List) -> Dict:
+    def get_counts(self, echoareas: List[str]) -> Dict[str, int]:
         """
         Counts the number of messages in a echoarea.
 
@@ -85,7 +84,7 @@ class Sqlite(Base):
         connection.close()
         return counts
 
-    def get_index(self, echoareas: List) -> List:
+    def get_index(self, echoareas: List[str]) -> List[str]:
         """
         Get msgids of echoareas and return they.
 
@@ -138,9 +137,13 @@ class Sqlite(Base):
               "subject, body FROM messages WHERE msgid = ?;"
         message = cursor.execute(sql, (msgid,)).fetchone()
         connection.close()
-        return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message)
+        if message:
+            return "{}\n{}\n{}\n{}\n{}\n{}\n{}\n\n{}".format(*message)
+        else:
+            return ""
 
-    def save_message(self, echoarea: str, msgid: str, message: str, cursor: object = None):
+    def save_message(self, echoarea: str, msgid: str, message: str,
+                     cursor: object = None):
         """
         Save message to base.
 
@@ -153,12 +156,12 @@ class Sqlite(Base):
         Return:
             bool: Save status. True if message saved else False.
         """
-        sql = """INSERT INTO messages (msgid, tags, echoarea, date, msgfrom, address, msgto, subject, body)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+        sql = """INSERT INTO messages (msgid, tags, echoarea, date, msgfrom,
+        address, msgto, subject, body) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
         lines = message.split("\n")
         cursor.execute(sql, (msgid, *lines[:7], "\n".join(lines[8:])))
 
-    def save_messages(self, bundle: List) -> int:
+    def save_messages(self, bundle: List[Dict[str, str]]) -> int:
         """
         Save messages of bundle to base.
 
@@ -178,12 +181,13 @@ class Sqlite(Base):
             if not self.is_message_exists(message["msgid"]):
                 new_messages.append({"msgid": message["msgid"], "body": body})
         for message in new_messages:
-            self.save_message(echoarea, message["msgid"], message["body"], cursor)
+            self.save_message(echoarea, message["msgid"], message["body"],
+                              cursor)
         connection.commit()
         connection.close()
         return len(new_messages)
 
-    def toss_message(self, point: Dict, encoded: str) -> str:
+    def toss_message(self, point: Dict[str, str], encoded: str) -> str:
         """
         Toss message from point and save that to base.
 
@@ -196,6 +200,7 @@ class Sqlite(Base):
             str: Status of tossed message:
                  "msg ok:<msgid>" or "error: msg big!".
         """
+        connection, cursor = self.__connect()
         return super().toss_message(self.save_message, point, encoded)
 
     def search_point(self, username: str) -> bool:
@@ -236,11 +241,12 @@ class Sqlite(Base):
             return authstr
         return ""
 
-    def check_point(self, nodename: str,  authstr: str) -> Dict:
+    def check_point(self, nodename: str,  authstr: str) -> Dict[str, str]:
         """
         Check for a point.
 
         Args:
+            nodename (str): Server name.
             authstr (str): Search authstr.
 
         Return:
@@ -251,10 +257,13 @@ class Sqlite(Base):
         sql = "SELECT username, id FROM points WHERE authstr = ?;"
         point = cursor.execute(sql, (authstr, )).fetchone()
         if point:
-            return {"name": point[0], "address": "{},{}".format(nodename, point[1])}
-        return None
+            return {
+                "name": point[0],
+                "address": "{},{}".format(nodename, point[1])
+            }
+        return {}
 
-    def point_list(self) -> List:
+    def point_list(self) -> List[str]:
         connection, cursor = self.__connect()
         sql = "SELECT username FROM points;"
         points = cursor.execute(sql).fetchall()

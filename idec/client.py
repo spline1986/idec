@@ -8,7 +8,7 @@ from idec.uplink import Uplink
 
 
 class Client:
-    def __init__(self, uplink: Uplink, base: Base, echoareas: List = None):
+    def __init__(self, uplink: Uplink, base: Base, echoareas: List[str] = None):
         self.uplink = uplink
         self.base = base
         self.echoareas = echoareas
@@ -32,7 +32,7 @@ class Client:
         """
         self.echoareas.remove(echoarea)
 
-    def add_echoareas(self, echoareas: List):
+    def add_echoareas(self, echoareas: List[str]):
         """
         Add echoareas to subscription list.
 
@@ -41,7 +41,7 @@ class Client:
         """
         self.echoareas = self.echoareas + echoareas
 
-    def delete_echoareas(self, echoareas: List):
+    def delete_echoareas(self, echoareas: List[str]):
         """
         Delete echoareas from subscription list.
 

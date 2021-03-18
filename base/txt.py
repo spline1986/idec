@@ -30,7 +30,7 @@ class Txt(Base):
         if not path.exists(self.path + "points.txt"):
             open(self.path + "points.txt", "w")
 
-    def get_blacklist(self) -> List:
+    def get_blacklist(self) -> List[str]:
         """
         Return blacklisted msgids.
 
@@ -40,7 +40,7 @@ class Txt(Base):
         return list(filter(lambda x: len(x) > 0,
                            open("blacklist.txt").read().split("\n")))
 
-    def get_counts(self, echoareas: List) -> Dict:
+    def get_counts(self, echoareas: List[str]) -> Dict[str, int]:
         """
         Counts the number of messages in a echoarea.
 
@@ -55,10 +55,11 @@ class Txt(Base):
             if not path.exists(self.path + "echo/" + echoarea):
                 counts[echoarea] = 0
             else:
-                counts[echoarea] = len(open(self.path + "echo/" + echoarea).read().split()) - 1
+                counts[echoarea] = len(open(self.path + "echo/" +
+                                            echoarea).read().split()) - 1
         return counts
 
-    def get_index(self, echoareas: List) -> List:
+    def get_index(self, echoareas: List[str]) -> List[str]:
         """
         Get msgids of echoareas and return they.
 
@@ -101,12 +102,13 @@ class Txt(Base):
         Return:
             str: Message as plain text.
         """
-        try:
+        if path.exists(self.path + "msg/" + msgid):
             return open(self.path + "msg/" + msgid).read()
-        except FileNotFoundError:
-            raise
+        else:
+            return ""
 
-    def save_message(self, echoarea: str, msgid: str, message: str, other: object = None) -> bool:
+    def save_message(self, echoarea: str, msgid: str, message: str,
+                     other: object = None) -> bool:
         """
         Save message to base.
 
@@ -125,7 +127,7 @@ class Txt(Base):
             return True
         return False
 
-    def save_messages(self, bundle: List) -> int:
+    def save_messages(self, bundle: List[Dict[str, str]]) -> int:
         """
         Save messages of bundle to base.
 
@@ -144,7 +146,7 @@ class Txt(Base):
                 saved_counter += 1
         return saved_counter
 
-    def toss_message(self, point: Dict, encoded: str) -> str:
+    def toss_message(self, point: Dict[str, str], encoded: str) -> str:
         """
         Toss message from point and save that to base.
 
@@ -192,11 +194,12 @@ class Txt(Base):
             return authstr
         return ""
 
-    def check_point(self, nodename: str, authstr: str) -> Dict:
+    def check_point(self, nodename: str, authstr: str) -> Dict[str, str]:
         """
         Check for a point.
 
         Args:
+            nodename (str): Server name.
             authstr (str): Search authstr.
 
         Return:
@@ -210,8 +213,8 @@ class Txt(Base):
             fields = point.split(":")
             if authstr == fields[1]:
                 return {"name": point[0], "addr": "{},{}".format(nodename, i)}
-        return None
+        return {}
 
-    def point_list(self) -> List:
+    def point_list(self) -> List[str]:
         points = open("points.txt").read().split("\n")
-        return list([x.split(":") for x in points if len(x) > 0])
+        return list([x.split(":")[0] for x in points if len(x) > 0])

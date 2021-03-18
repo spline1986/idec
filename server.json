@@ -3,6 +3,7 @@
   "base": "idec.db",
   "echoareas": [
     { "name": "pipe.2032", "description": "Общесетевая болталка" },
-    { "name": "bash.rss", "description": "RSS-лента сайта bash.im"}
+    { "name": "bash.rss", "description": "RSS-лента сайта bash.im"},
+    { "name":  "idec.test", "description": "Тестовая эха" }
   ]
 }
