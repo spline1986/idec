@@ -200,8 +200,18 @@ class Sqlite(Base):
             str: Status of tossed message:
                  "msg ok:<msgid>" or "error: msg big!".
         """
-        connection, cursor = self.__connect()
-        return super().toss_message(self.save_message, point, encoded)
+        def toss_and_save_message(echoarea: str, msgid: str,
+                                  message: str):
+            connection, cursor = self.__connect()
+            sql = """INSERT INTO messages (msgid, tags, echoarea, date, msgfrom,
+                    address, msgto, subject, body) VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+            lines = message.split("\n")
+            cursor.execute(sql, (msgid, *lines[:7], "\n".join(lines[8:])))
+            connection.commit()
+            connection.close()
+
+        return super().toss_message(toss_and_save_message, point, encoded)
 
     def search_point(self, username: str) -> bool:
         """
