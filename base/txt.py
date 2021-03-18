@@ -72,7 +72,7 @@ class Txt(Base):
         index = []
         for echoarea in echoareas:
             if path.exists(self.path + "echo/" + echoarea):
-                with open(echoarea) as f:
+                with open(self.path + "echo/" + echoarea) as f:
                     for msgid in f.read().split():
                         if len(msgid) > 0:
                             index.append(msgid)
@@ -211,8 +211,11 @@ class Txt(Base):
         for point in points:
             i += 1
             fields = point.split(":")
-            if authstr == fields[1]:
-                return {"name": point[0], "addr": "{},{}".format(nodename, i)}
+            if len(fields) == 2 and authstr == fields[1]:
+                return {
+                    "name": point[0],
+                    "address": "{},{}".format(nodename, i)
+                }
         return {}
 
     def point_list(self) -> List[str]:
