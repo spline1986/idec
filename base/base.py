@@ -120,6 +120,17 @@ class Base:
         """
         pass
 
+    def search_point(self, username: str) -> bool:
+        """
+        Search point by username.
+
+        Args:
+            username (str): Point's username.
+
+        Return:
+            bool: True if username exists else False.
+        """
+
     def add_point(self, username: str) -> str:
         """
         Register point.

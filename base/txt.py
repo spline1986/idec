@@ -159,6 +159,23 @@ class Txt(Base):
         """
         return super().toss_message(self.save_message, point, encoded)
 
+    def search_point(self, username: str) -> bool:
+        """
+        Search point by username.
+
+        Args:
+            username (str): Point's username.
+
+        Return:
+            bool: True if username exists else False.
+        """
+        lines = open("points.txt").read().split("\n")
+        for line in lines:
+            fields = line.split(":")
+            if fields[0] == username:
+                return True
+        return False
+
     def add_point(self, username: str) -> str:
         """
         Register point.
@@ -169,12 +186,7 @@ class Txt(Base):
         Return:
             str: Authstr.
         """
-        points = open("points.txt").read().split("\n")
-        exists = False
-        for point in points:
-            if username == point.split(":")[0]:
-                exists = True
-        if not exists:
+        if not self.search_point(username):
             authstr = Base.generate_authstr(username)
             open("points.txt", "a").write("{}:{}\n".format(username, authstr))
             return authstr

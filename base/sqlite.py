@@ -198,6 +198,24 @@ class Sqlite(Base):
         """
         return super().toss_message(self.save_message, point, encoded)
 
+    def search_point(self, username: str) -> bool:
+        """
+        Search point by username.
+
+        Args:
+            username (str): Point's username.
+
+        Return:
+            bool: True if username exists else False.
+        """
+        connection, cursor = self.__connect()
+        sql = "SELECT COUNT(1) FROM points WHERE username = ?"
+        if cursor.execute(sql, (username,)).fetchone()[0] == 0:
+            connection.close()
+            return False
+        connection.close()
+        return True
+
     def add_point(self, username: str) -> str:
         """
         Register point.
@@ -208,13 +226,8 @@ class Sqlite(Base):
         Return:
             str: Authstr.
         """
-        connection, cursor = self.__connect()
-        sql = "SELECT COUNT(1) FROM points WHERE username = ?"
-        if cursor.execute(sql, (username,)).fetchone()[0] == 0:
-            point_exists = False
-        else:
-            point_exists = True
-        if not point_exists:
+        if not self.search_point(username):
+            connection, cursor = self.__connect()
             authstr = Base.generate_authstr(username)
             sql = "INSERT INTO points (username, authstr) VALUES (?, ?);"
             cursor.execute(sql, (username, authstr))
