@@ -180,7 +180,7 @@ class Txt(Base):
             return authstr
         return ""
 
-    def check_point(self, authstr: str) -> Dict:
+    def check_point(self, nodename: str, authstr: str) -> Dict:
         """
         Check for a point.
 
@@ -197,7 +197,7 @@ class Txt(Base):
             i += 1
             fields = point.split(":")
             if authstr == fields[1]:
-                return {"name": point[0], "addr": i}
+                return {"name": point[0], "addr": "{},{}".format(nodename, i)}
         return None
 
     def point_list(self) -> List:

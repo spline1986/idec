@@ -132,11 +132,12 @@ class Base:
         """
         pass
 
-    def check_point(self, authstr: str) -> Dict:
+    def check_point(self, nodename: str, authstr: str) -> Dict:
         """
         Check for a point.
 
         Args:
+            nodename (str): Server name.
             authstr (str): Search authstr.
 
         Return:

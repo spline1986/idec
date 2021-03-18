@@ -223,7 +223,7 @@ class Sqlite(Base):
             return authstr
         return ""
 
-    def check_point(self, authstr: str) -> Dict:
+    def check_point(self, nodename: str,  authstr: str) -> Dict:
         """
         Check for a point.
 
@@ -238,7 +238,7 @@ class Sqlite(Base):
         sql = "SELECT username, id FROM points WHERE authstr = ?;"
         point = cursor.execute(sql, (authstr, )).fetchone()
         if point:
-            return {"name": point[0], "address": point[1]}
+            return {"name": point[0], "address": "{},{}".format(nodename, point[1])}
         return None
 
     def point_list(self) -> List:
