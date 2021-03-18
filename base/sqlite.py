@@ -240,3 +240,12 @@ class Sqlite(Base):
         if point:
             return {"name": point[0], "address": point[1]}
         return None
+
+    def point_list(self) -> List:
+        connection, cursor = self.__connect()
+        sql = "SELECT username FROM points;"
+        points = cursor.execute(sql).fetchall()
+        usernames = []
+        for point in points:
+            usernames.append(point[0])
+        return usernames

@@ -145,6 +145,14 @@ class Base:
         """
         pass
 
+    def point_list(self) -> List:
+        """
+        List of all points on server.
+
+        Return:
+        """
+        pass
+
     @staticmethod
     def generate_authstr(username: str) -> str:
         """

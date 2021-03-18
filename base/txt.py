@@ -199,3 +199,7 @@ class Txt(Base):
             if authstr == fields[1]:
                 return {"name": point[0], "addr": i}
         return None
+
+    def point_list(self) -> List:
+        points = open("points.txt").read().split("\n")
+        return list([x.split(":") for x in points if len(x) > 0])
