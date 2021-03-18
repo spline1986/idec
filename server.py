@@ -96,8 +96,10 @@ def receive_message(pauth: str = "", tmsg: str = ""):
         pauth = request.POST["pauth"]
         tmsg = request.POST["tmsg"]
     point = base.check_point(config["nodename"], pauth)
-    status = base.toss_message(point, tmsg)
-    return status
+    if point:
+        status = base.toss_message(point, tmsg)
+        return status
+    return "error:login incorrect"
 
 
 config = json.loads(open("server.json").read())
