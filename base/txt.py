@@ -29,6 +29,10 @@ class Txt(Base):
             open(self.path + "blacklist.txt", "w")
         if not path.exists(self.path + "points.txt"):
             open(self.path + "points.txt", "w")
+        if not path.exists(self.path + "files"):
+            mkdir(self.path + "files")
+        if not path.exists(self.path + "files/index.txt"):
+            open(self.path + "files/index.txt", "w")
 
     def get_blacklist(self) -> List[str]:
         """
@@ -227,3 +231,17 @@ class Txt(Base):
         """
         points = open("points.txt").read().split("\n")
         return list([x.split(":")[0] for x in points if len(x) > 0])
+
+    def file_list(self) -> List[str]:
+        """
+        List of files available by file request.
+
+        Return:
+            List (str): Files list.
+        """
+        lines = open(self.path + "files/index.txt").read().split("\n")
+        files = []
+        for line in lines:
+            if len(line) > 0:
+                files.append(line)
+        return files
