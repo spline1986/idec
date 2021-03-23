@@ -102,6 +102,17 @@ def receive_message(pauth: str = "", tmsg: str = ""):
     return "error:login incorrect"
 
 
+@route("/x/c/<echoareas:path>")
+def echoareas_count(echoareas: str):
+    response.set_header("Content-Type", "text/plain; charset=utf-8")
+    echoareas = echoareas.split("/")
+    counts = base.get_counts(echoareas)
+    xc = ""
+    for echoarea in echoareas:
+        xc += "{}:{}\n".format(echoarea, counts[echoarea])
+    return xc
+
+
 config = json.loads(open("server.json").read())
 base = Sqlite(config["base"])
 run(host="0.0.0.0", port=62220)
