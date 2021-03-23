@@ -174,6 +174,7 @@ class Base:
         Return:
             List (str): Files list.
         """
+        pass
 
     @staticmethod
     def generate_authstr(username: str) -> str:
