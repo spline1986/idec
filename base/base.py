@@ -166,6 +166,14 @@ class Base:
         """
         pass
 
+    def file_list(self) -> List[str]:
+        """
+        List of files available by file request.
+
+        Return:
+            List (str): Files list.
+        """
+
     @staticmethod
     def generate_authstr(username: str) -> str:
         """
