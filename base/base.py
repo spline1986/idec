@@ -163,6 +163,7 @@ class Base:
         List of all points on server.
 
         Return:
+            List (str): Points list.
         """
         pass
 

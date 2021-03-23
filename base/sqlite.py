@@ -274,6 +274,12 @@ class Sqlite(Base):
         return {}
 
     def point_list(self) -> List[str]:
+        """
+        List of all points on server.
+
+        Return:
+            List (str): Points list.
+        """
         connection, cursor = self.__connect()
         sql = "SELECT username FROM points;"
         points = cursor.execute(sql).fetchall()

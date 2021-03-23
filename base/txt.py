@@ -219,5 +219,11 @@ class Txt(Base):
         return {}
 
     def point_list(self) -> List[str]:
+        """
+        List of all points on server.
+
+        Return:
+            List (str): Points list.
+        """
         points = open("points.txt").read().split("\n")
         return list([x.split(":")[0] for x in points if len(x) > 0])
