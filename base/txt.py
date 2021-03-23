@@ -42,7 +42,7 @@ class Txt(Base):
             List: List of blacklisted msgids.
         """
         return list(filter(lambda x: len(x) > 0,
-                           open("blacklist.txt").read().split("\n")))
+                           open(self.path + "blacklist.txt").read().split("\n")))
 
     def get_counts(self, echoareas: List[str]) -> Dict[str, int]:
         """
@@ -175,7 +175,7 @@ class Txt(Base):
         Return:
             bool: True if username exists else False.
         """
-        lines = open("points.txt").read().split("\n")
+        lines = open(self.path + "points.txt").read().split("\n")
         for line in lines:
             fields = line.split(":")
             if fields[0] == username:
@@ -194,7 +194,7 @@ class Txt(Base):
         """
         if not self.search_point(username):
             authstr = Base.generate_authstr(username)
-            open("points.txt", "a").write("{}:{}\n".format(username, authstr))
+            open(self.path + "points.txt", "a").write("{}:{}\n".format(username, authstr))
             return authstr
         return ""
 
@@ -210,7 +210,7 @@ class Txt(Base):
             Dict: Point informationa:
                   {"name", "address"} or None.
         """
-        points = open("points.txt").read().split("\n")
+        points = open(self.path + "points.txt").read().split("\n")
         i = 0
         for point in points:
             i += 1
@@ -229,7 +229,7 @@ class Txt(Base):
         Return:
             List (str): Points list.
         """
-        points = open("points.txt").read().split("\n")
+        points = open(self.path + "points.txt").read().split("\n")
         return list([x.split(":")[0] for x in points if len(x) > 0])
 
     def file_list(self) -> List[str]:
