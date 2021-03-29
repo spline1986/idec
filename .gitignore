@@ -1,0 +1,6 @@
+idec.db
+server.json
+fetcher.json
+venv/*
+*__pycache__
+
