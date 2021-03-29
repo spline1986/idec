@@ -28,24 +28,31 @@ class Sqlite(Base):
         """
         connection, cursor = self.__connect()
         sql = """CREATE TABLE IF NOT EXISTS messages(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        msgid TEXT,
-        blacklisted INTEGER DEFAULT 0,
-        tags TEXT,
-        echoarea TEXT,
-        date INTEGER,
-        msgfrom TEXT,
-        address TEXT,
-        msgto TEXT,
-        subject TEXT,
-        body TEXT,
-        UNIQUE(id));"""
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            msgid TEXT,
+            blacklisted INTEGER DEFAULT 0,
+            tags TEXT,
+            echoarea TEXT,
+            date INTEGER,
+            msgfrom TEXT,
+            address TEXT,
+            msgto TEXT,
+            subject TEXT,
+            body TEXT,
+            UNIQUE(id));"""
         cursor.execute(sql)
         sql = """CREATE TABLE IF NOT EXISTS points(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        username TEXT,
-        authstr TEXT,
-        UNIQUE(id));"""
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            username TEXT,
+            authstr TEXT,
+            UNIQUE(id));"""
+        cursor.execute(sql)
+        sql = """CREATE TABLE IF NOT EXISTS files(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            filename TEXT,
+            size INTEGER,
+            description TEXT,
+            UNIQUE(id));"""
         cursor.execute(sql)
         connection.commit()
         connection.close()
@@ -287,3 +294,12 @@ class Sqlite(Base):
         for point in points:
             usernames.append(point[0])
         return usernames
+
+    def file_list(self) -> List[str]:
+        connection, cursor = self.__connect()
+        sql = "SELECT * FROM files ORDER BY id;"
+        files = cursor.execute(sql).fetchall()
+        index = []
+        for file in files:
+            index_line = "{}:{}:{}".format(*files[1:])
+        return index
